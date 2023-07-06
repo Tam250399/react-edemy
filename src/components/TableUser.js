@@ -11,15 +11,15 @@ const TableUser = (props) =>{
     
     const getUser = async() =>{
         let res = await fetchAllUser();
-        if(res && res.data && res.data.data){
-            setListUsers(res.data.data)
+        console.log('>>check',res);
+        if(res && res.data){
+            setListUsers(res.data)
         }
        
     }
 
-    console.log(listUsers);
     return(<>
-     <Table striped  hover>
+     <Table striped bordered hover>
       <thead>
       {/* "id": 1,
       "email": "george.bluth@reqres.in",
