@@ -5,7 +5,7 @@ import {fetchAllUser} from '../service/userService';
 import ReactPaginate from 'react-paginate';
 const TableUser = (props) =>{
     const [listUsers, setListUsers] = useState([]);
-    const [totalUsers , setTotalUsers] = useState(0);
+   // const [totalUsers , setTotalUsers] = useState(0);
     const [totalPage , setTotalPage] = useState(1);
     useEffect(() =>{
         getUser(1);
@@ -15,7 +15,7 @@ const TableUser = (props) =>{
         let res = await fetchAllUser(page);
         if(res && res.data){
           console.log(res);
-          setTotalUsers(res.total)
+         // setTotalUsers(res.total)
           setTotalPage(res.total_pages)
             setListUsers(res.data)
         }
