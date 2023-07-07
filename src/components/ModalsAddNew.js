@@ -1,13 +1,36 @@
 import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-
+import { postCreateUser } from "../service/userService";
+import { toast } from "react-toastify";
 const Modals = (props) => {
-  const { show, handleClose } = props;
+  const { show, handleClose, handUpadateUser } = props;
   const [name, setName] = useState("");
-  const [Job, setJob] = useState("");
-  const handleSaveUser = () => {
-    console.log("name", name, "job", Job);
+  const [job, setJob] = useState("");
+
+  const handleSaveUser = async () => {
+    let res = await postCreateUser(name, job);
+    // if (name === "" || job === "") {
+    //   handleClose();
+    //   setName("");
+    //   setJob("");
+    //   return toast.error("Chưa nhập user và job ");
+    // }
+
+    if (res && res.id) {
+      handleClose();
+      setName("");
+      setJob("");
+      toast.success("Lưu thành công");
+      handUpadateUser({
+        email: job,
+        first_name: name,
+        id: res.id,
+      });
+    } else {
+      handleClose();
+      toast.error("Lưu không thành công");
+    }
   };
 
   return (
@@ -37,7 +60,7 @@ const Modals = (props) => {
                 type="text"
                 placeholder="job"
                 className="form-control"
-                value={Job}
+                value={job}
                 onChange={(event) => setJob(event.target.value)}
               />
             </div>
