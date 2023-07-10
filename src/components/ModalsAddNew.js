@@ -38,14 +38,19 @@ const Modals = (props) => {
       className="modal show"
       style={{ display: "block", position: "initial" }}
     >
-      <Modal show={show} onHide={handleClose}>
+      <Modal
+        show={show}
+        onHide={handleClose}
+        backdrop="static"
+        keyboard={false}
+      >
         <Modal.Header closeButton>
-          <Modal.Title>Add New User</Modal.Title>
+          <Modal.Title>Thêm người dùng</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div className="body-add-new">
             <div className="mb-3">
-              <label className="form-label">User</label>
+              <label className="form-label">Tên người dùng</label>
               <input
                 type="text"
                 className="form-control"
@@ -55,7 +60,7 @@ const Modals = (props) => {
               />
             </div>
             <div className="mb-3">
-              <label className="form-label">Job</label>
+              <label className="form-label">Biệt danh</label>
               <input
                 type="text"
                 placeholder="job"
@@ -68,10 +73,10 @@ const Modals = (props) => {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
-            Close
+            Hủy
           </Button>
           <Button variant="primary" onClick={() => handleSaveUser()}>
-            Save Changes
+            Lưu
           </Button>
         </Modal.Footer>
       </Modal>

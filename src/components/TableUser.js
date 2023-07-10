@@ -4,6 +4,7 @@ import { fetchAllUser } from "../service/userService";
 import ReactPaginate from "react-paginate";
 import ModalsAddNew from "./ModalsAddNew";
 import ModalEditUser from "./ModalsEditUser";
+import ModalsConfirm from "./ModalsConfirm";
 import _ from "lodash";
 const TableUser = (props) => {
   const [listUsers, setListUsers] = useState([]);
@@ -15,9 +16,13 @@ const TableUser = (props) => {
 
   const [dataUserEdit, setDataUserEdit] = useState({});
 
+  const [isShowModalDelete, setShowModalDelete] = useState(false);
+  const [dataUserDelete, setDataUserDelete] = useState({});
+
   const handleClose = () => {
     setShowModals(false);
     setShowEditModal(false);
+    setShowModalDelete(false);
   };
 
   const handUpadateUser = (user) => {
@@ -28,6 +33,11 @@ const TableUser = (props) => {
     let cloneListUser = _.cloneDeep(listUsers);
     let index = listUsers.findIndex((item) => item.id === user.id);
     cloneListUser[index].first_name = user.first_name;
+    cloneListUser[index].last_name = user.last_name;
+
+    console.log("====================================");
+    console.log(user);
+    console.log("====================================");
     setListUsers(cloneListUser);
   };
 
@@ -54,17 +64,29 @@ const TableUser = (props) => {
     setDataUserEdit(user);
   };
 
+  const handleDeleteUser = (user) => {
+    setShowModalDelete(true);
+    setDataUserDelete(user);
+  };
+
+  const handleDeleteModal = (user) => {
+    let cloneListUser = _.cloneDeep(listUsers);
+    cloneListUser = cloneListUser.filter((item) => item.id !== user.id);
+
+    setListUsers(cloneListUser);
+  };
+
   return (
     <>
       <div className="my-4 add-new">
-        <span className="List-user">List Users</span>
+        <span className="List-user">Thông tin người dùng</span>
         <button
           className="btn btn-success"
           onClick={() => {
             setShowModals(true);
           }}
         >
-          Add User
+          Thêm mới
         </button>
       </div>
       <Table striped bordered hover>
@@ -98,10 +120,14 @@ const TableUser = (props) => {
                       className="btn btn-warning"
                       onClick={() => handleEditUser(item)}
                     >
-                      Edit
+                      Sửa
                     </button>
-                    <button type="button" className="btn btn-danger mx-4">
-                      Delete
+                    <button
+                      type="button"
+                      className="btn btn-danger mx-4"
+                      onClick={() => handleDeleteUser(item)}
+                    >
+                      Xóa
                     </button>
                   </td>
                 </tr>
@@ -111,11 +137,16 @@ const TableUser = (props) => {
       </Table>
       <ReactPaginate
         breakLabel="..."
-        nextLabel="next >"
+        nextLabel="Trước >"
         onPageChange={handlePageClick}
         pageRangeDisplayed={5}
         pageCount={totalPage}
-        previousLabel="< previous"
+        previousLabel={
+          <div>
+            <i class="fa fa-arrow-left" aria-hidden="true" />
+            Sau
+          </div>
+        }
         pageClassName="page-item"
         pageLinkClassName="page-link"
         previousClassName="page-item"
@@ -137,6 +168,12 @@ const TableUser = (props) => {
         handleClose={handleClose}
         dataUserEdit={dataUserEdit}
         handleUpdateTable={handleUpdateTable}
+      />
+      <ModalsConfirm
+        show={isShowModalDelete}
+        handleClose={handleClose}
+        dataUserDelete={dataUserDelete}
+        handleDeleteModal={handleDeleteModal}
       />
     </>
   );
