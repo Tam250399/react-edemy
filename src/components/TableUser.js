@@ -3,19 +3,32 @@ import Table from "react-bootstrap/Table";
 import { fetchAllUser } from "../service/userService";
 import ReactPaginate from "react-paginate";
 import ModalsAddNew from "./ModalsAddNew";
+import ModalEditUser from "./ModalsEditUser";
+import _ from "lodash";
 const TableUser = (props) => {
   const [listUsers, setListUsers] = useState([]);
-  // const [totalUsers , setTotalUsers] = useState(0);
-  const [totalPage, setTotalPage] = useState(1);
+  //const [totalUsers , setTotalUsers] = useState(0);
+  const [totalPage, setTotalPage] = useState(0);
 
   const [isShowModals, setShowModals] = useState(false);
+  const [isShowEditModals, setShowEditModal] = useState(false);
+
+  const [dataUserEdit, setDataUserEdit] = useState({});
 
   const handleClose = () => {
     setShowModals(false);
+    setShowEditModal(false);
   };
 
   const handUpadateUser = (user) => {
     setListUsers([user, ...listUsers]);
+  };
+
+  const handleUpdateTable = (user) => {
+    let cloneListUser = _.cloneDeep(listUsers);
+    let index = listUsers.findIndex((item) => item.id === user.id);
+    cloneListUser[index].first_name = user.first_name;
+    setListUsers(cloneListUser);
   };
 
   useEffect(() => {
@@ -34,6 +47,11 @@ const TableUser = (props) => {
   console.log(totalPage);
   const handlePageClick = (event) => {
     getUser(+event.selected + 1);
+  };
+
+  const handleEditUser = (user) => {
+    setShowEditModal(true);
+    setDataUserEdit(user);
   };
 
   return (
@@ -61,6 +79,7 @@ const TableUser = (props) => {
             <th>Email</th>
             <th>FirstName</th>
             <th>LastName</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -73,6 +92,18 @@ const TableUser = (props) => {
                   <td>{item.email}</td>
                   <td>{item.first_name}</td>
                   <td>{item.last_name}</td>
+                  <td>
+                    <button
+                      type="button"
+                      className="btn btn-warning"
+                      onClick={() => handleEditUser(item)}
+                    >
+                      Edit
+                    </button>
+                    <button type="button" className="btn btn-danger mx-4">
+                      Delete
+                    </button>
+                  </td>
                 </tr>
               );
             })}
@@ -100,6 +131,12 @@ const TableUser = (props) => {
         show={isShowModals}
         handleClose={handleClose}
         handUpadateUser={handUpadateUser}
+      />
+      <ModalEditUser
+        show={isShowEditModals}
+        handleClose={handleClose}
+        dataUserEdit={dataUserEdit}
+        handleUpdateTable={handleUpdateTable}
       />
     </>
   );

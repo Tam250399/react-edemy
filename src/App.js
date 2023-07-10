@@ -1,7 +1,6 @@
 import Header from "./components/Header";
 import "./App.scss";
 import TableUser from "./components/TableUser";
-
 import { Container } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
 
