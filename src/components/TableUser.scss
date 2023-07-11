@@ -1,0 +1,11 @@
+.sort-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    span {
+        i{
+            cursor: pointer; 
+            padding-left: 3px;
+        }
+    }
+}

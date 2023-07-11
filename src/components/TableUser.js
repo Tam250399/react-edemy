@@ -5,6 +5,8 @@ import ReactPaginate from "react-paginate";
 import ModalsAddNew from "./ModalsAddNew";
 import ModalEditUser from "./ModalsEditUser";
 import ModalsConfirm from "./ModalsConfirm";
+
+import "./TableUser.scss";
 import _ from "lodash";
 const TableUser = (props) => {
   const [listUsers, setListUsers] = useState([]);
@@ -18,6 +20,9 @@ const TableUser = (props) => {
 
   const [isShowModalDelete, setShowModalDelete] = useState(false);
   const [dataUserDelete, setDataUserDelete] = useState({});
+
+  const [sortBy, setSortBy] = useState("");
+  const [fieldSortBy, setFieldSortBy] = useState("id");
 
   const handleClose = () => {
     setShowModals(false);
@@ -34,10 +39,6 @@ const TableUser = (props) => {
     let index = listUsers.findIndex((item) => item.id === user.id);
     cloneListUser[index].first_name = user.first_name;
     cloneListUser[index].last_name = user.last_name;
-
-    console.log("====================================");
-    console.log(user);
-    console.log("====================================");
     setListUsers(cloneListUser);
   };
 
@@ -76,6 +77,14 @@ const TableUser = (props) => {
     setListUsers(cloneListUser);
   };
 
+  const handleSort = (sortBy, fieldSortBy) => {
+    setSortBy(sortBy);
+    setFieldSortBy(fieldSortBy);
+    let cloneListUser = _.cloneDeep(listUsers);
+    cloneListUser = _.orderBy(cloneListUser, [fieldSortBy], [sortBy]);
+    setListUsers(cloneListUser);
+  };
+
   return (
     <>
       <div className="my-4 add-new">
@@ -97,9 +106,37 @@ const TableUser = (props) => {
       "last_name": "Bluth",
       "avatar": "https://reqres.in/img/faces/1-image.jpg" */}
           <tr className="style-header">
-            <th>STT</th>
+            <th>
+              <div className="sort-header">
+                <span>STT</span>
+                <span>
+                  <i
+                    className="fa-solid fa-arrow-up-long"
+                    onClick={() => handleSort("desc", "id")}
+                  ></i>
+                  <i
+                    className="fa-solid fa-arrow-down-long"
+                    onClick={() => handleSort("asc", "id")}
+                  ></i>
+                </span>
+              </div>
+            </th>
             <th>Email</th>
-            <th>FirstName</th>
+            <th>
+              <div className="sort-header">
+                <span>FirstName</span>
+                <span>
+                  <i
+                    className="fa-solid fa-arrow-up-long"
+                    onClick={() => handleSort("desc", "first_name")}
+                  ></i>
+                  <i
+                    className="fa-solid fa-arrow-down-long"
+                    onClick={() => handleSort("asc", "first_name")}
+                  ></i>
+                </span>
+              </div>
+            </th>
             <th>LastName</th>
             <th>Actions</th>
           </tr>
@@ -143,7 +180,7 @@ const TableUser = (props) => {
         pageCount={totalPage}
         previousLabel={
           <div>
-            <i class="fa fa-arrow-left" aria-hidden="true" />
+            <i className="fa fa-arrow-left" aria-hidden="true" />
             Sau
           </div>
         }

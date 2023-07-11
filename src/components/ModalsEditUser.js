@@ -18,7 +18,7 @@ const ModalEditUser = (props) => {
       });
 
       handleClose();
-      toast.success("Update thành công");
+      toast.success("Sửa thành công");
     }
   };
 
