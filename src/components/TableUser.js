@@ -7,7 +7,7 @@ import ModalEditUser from "./ModalsEditUser";
 import ModalsConfirm from "./ModalsConfirm";
 
 import "./TableUser.scss";
-import _ from "lodash";
+import _, { debounce } from "lodash";
 const TableUser = (props) => {
   const [listUsers, setListUsers] = useState([]);
   //const [totalUsers , setTotalUsers] = useState(0);
@@ -23,6 +23,8 @@ const TableUser = (props) => {
 
   const [sortBy, setSortBy] = useState("");
   const [fieldSortBy, setFieldSortBy] = useState("id");
+
+  const [isSearch, setSearch] = useState("");
 
   const handleClose = () => {
     setShowModals(false);
@@ -85,6 +87,19 @@ const TableUser = (props) => {
     setListUsers(cloneListUser);
   };
 
+  const handleSearch = debounce((event) => {
+    let search = event.target.value;
+    if (search) {
+      let cloneListUser = _.cloneDeep(listUsers);
+      cloneListUser = cloneListUser.filter((item) =>
+        item.email.includes(search)
+      );
+      setListUsers(cloneListUser);
+    } else {
+      getUser(1);
+    }
+  }, 500);
+
   return (
     <>
       <div className="my-4 add-new">
@@ -97,6 +112,14 @@ const TableUser = (props) => {
         >
           Thêm mới
         </button>
+      </div>
+      <div className="my-3 col-4">
+        <input
+          className="searchControl"
+          placeholder="nhập Email..."
+          // value={isSearch}
+          onChange={(event) => handleSearch(event)}
+        />
       </div>
       <Table striped bordered hover>
         <thead>
