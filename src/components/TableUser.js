@@ -6,9 +6,10 @@ import ModalsAddNew from "./ModalsAddNew";
 import ModalEditUser from "./ModalsEditUser";
 import ModalsConfirm from "./ModalsConfirm";
 import { CSVLink, CSVDownload } from "react-csv";
-
+import Papa from "papaparse";
 import "./TableUser.scss";
 import _, { debounce } from "lodash";
+import { toast } from "react-toastify";
 const TableUser = (props) => {
   const [listUsers, setListUsers] = useState([]);
   //const [totalUsers , setTotalUsers] = useState(0);
@@ -121,15 +122,66 @@ const TableUser = (props) => {
     }
   };
 
+  const handleImportCSV = (event) => {
+    if (event.target && event.target.files && event.target.files[0]) {
+      let file = event.target.files[0];
+      if (file.type !== "text/csv") {
+        toast.error("tải file sai định dạng");
+        return;
+      }
+      Papa.parse(file, {
+        header: false,
+        complete: function (results) {
+          let fileRow = results.data;
+          if (fileRow.length > 0) {
+            if (fileRow[0] && fileRow[0].length === 3) {
+              if (
+                fileRow[0][0] !== "email" ||
+                fileRow[0][1] !== "first_name" ||
+                fileRow[0][2] !== "last_name"
+              ) {
+                toast.error("sai định dạng");
+              } else {
+                let results = [];
+                fileRow.map((item, index) => {
+                  if (index > 0 && item.length === 3) {
+                    let obj = {};
+
+                    obj.email = item[0];
+                    obj.first_name = item[1];
+                    obj.last_name = item[2];
+
+                    results.push(obj);
+                  }
+                });
+                setListUsers(results);
+                toast.success("tải file thành công");
+              }
+            } else {
+              toast.error("sai định dạnga");
+            }
+          } else {
+            toast.error("file tải lên trống");
+          }
+        },
+      });
+    }
+  };
+
   return (
     <>
       <div className="my-4 add-new">
         <span className="List-user">Thông tin người dùng</span>
         <div className="group-btns">
           <label htmlFor="Import" className="btn btn-primary">
-            <i class="fa-sharp fa-solid fa-upload"></i> Import
+            <i className="fa-sharp fa-solid fa-upload"></i> Import
           </label>
-          <input type="file" id="Import" hidden />
+          <input
+            type="file"
+            id="Import"
+            hidden
+            onChange={(event) => handleImportCSV(event)}
+          />
           <CSVLink
             data={dataExport}
             filename={"my-file.csv"}
@@ -145,7 +197,7 @@ const TableUser = (props) => {
               setShowModals(true);
             }}
           >
-            <i class="fa-solid fa-circle-plus"></i> Thêm mới
+            <i className="fa-solid fa-circle-plus"></i> Thêm mới
           </button>
         </div>
       </div>
