@@ -5,6 +5,7 @@ import ReactPaginate from "react-paginate";
 import ModalsAddNew from "./ModalsAddNew";
 import ModalEditUser from "./ModalsEditUser";
 import ModalsConfirm from "./ModalsConfirm";
+import { CSVLink, CSVDownload } from "react-csv";
 
 import "./TableUser.scss";
 import _, { debounce } from "lodash";
@@ -24,7 +25,7 @@ const TableUser = (props) => {
   const [sortBy, setSortBy] = useState("");
   const [fieldSortBy, setFieldSortBy] = useState("id");
 
-  const [isSearch, setSearch] = useState("");
+  const [dataExport, setDataExport] = useState([]);
 
   const handleClose = () => {
     setShowModals(false);
@@ -100,24 +101,58 @@ const TableUser = (props) => {
     }
   }, 500);
 
+  const getUsersExport = (event, done) => {
+    let result = [];
+    if (listUsers && listUsers.length > 0) {
+      result.push(["Id", "Email", "First Name", "Last Name"]);
+      listUsers.map((item) => {
+        let arr = [];
+
+        arr[0] = item.id;
+        arr[1] = item.email;
+        arr[2] = item.first_name;
+        arr[3] = item.last_name;
+
+        result.push(arr);
+      });
+
+      setDataExport(result);
+      done();
+    }
+  };
+
   return (
     <>
       <div className="my-4 add-new">
         <span className="List-user">Thông tin người dùng</span>
-        <button
-          className="btn btn-success"
-          onClick={() => {
-            setShowModals(true);
-          }}
-        >
-          Thêm mới
-        </button>
+        <div className="group-btns">
+          <label htmlFor="Import" className="btn btn-primary">
+            <i class="fa-sharp fa-solid fa-upload"></i> Import
+          </label>
+          <input type="file" id="Import" hidden />
+          <CSVLink
+            data={dataExport}
+            filename={"my-file.csv"}
+            asyncOnClick={true}
+            onClick={getUsersExport}
+            className="btn btn-warning"
+          >
+            <i className="fa-solid fa-file-export"></i> Export
+          </CSVLink>
+          <button
+            className="btn btn-success"
+            onClick={() => {
+              setShowModals(true);
+            }}
+          >
+            <i class="fa-solid fa-circle-plus"></i> Thêm mới
+          </button>
+        </div>
       </div>
-      <div className="my-3 col-4">
+      <div className="my-3 ">
         <input
-          className="searchControl"
-          placeholder="nhập Email..."
-          // value={isSearch}
+          className="searchControl col-4"
+          placeholder="Nhập Email..."
           onChange={(event) => handleSearch(event)}
         />
       </div>
