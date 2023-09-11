@@ -17,3 +17,4 @@ const deleteUser = (id) => {
   return axios.delete(`/api/users/${id}`);
 };
 export { fetchAllUser, postCreateUser, putUpdateUser, deleteUser };
+//tam 2503
